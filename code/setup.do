@@ -1,1 +1,4 @@
-mkdir ../data
+do globals.do
+capture {
+    mkdir $data
+}
