@@ -23,5 +23,8 @@ docs/site/
 # environment.
 Manifest.toml
 
-# Don't store data on Github. The code will produce all the data.
+# Don't store changes to these folders on github
 data/
+notes/
+lit/
+.DS_Store
