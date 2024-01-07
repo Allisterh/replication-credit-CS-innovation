@@ -4,7 +4,7 @@ Code for a project looking to model credit supply expansion over the business cy
 ## Getting Started
 Once you clone the repo, please 
 1. Create a new branch.
-2. Once you have set your Stata working directory to wherever [code](code) folder of the project,
+2. Next, set set your Stata working directory to the [code](code) folder of the repo. Then
 run the [setup](code/setup.do) file.
 
 The setup file will create the necessary directories. It will also run import and cleaning code so that
