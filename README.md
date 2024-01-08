@@ -3,6 +3,7 @@ Code for a project looking to model credit supply expansion over the business cy
 
 ## Data-Availability
 The data are not yet available. In the future, I will create a Github page from which one may download the data.
+However, you can in theory, follow [Data Sources](#data-sources), putting all the raw datasets in a single folder called ``data" and run the code.
 
 ## Data Sources
 1. USPTO data come from [here](https://www.uspto.gov/ip-policy/economic-research/research-datasets/patent-assignment-dataset).
