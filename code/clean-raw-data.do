@@ -23,5 +23,5 @@ ds GEO_ID NAME NAICS NAICS_LABEL METRO METRO_LABEL, not
 foreach i in `r(varlist)' {
     destring `i', replace force
 }
-keep if NAICS == "00"                                       // I don't anticipate using industry counts. This may change
+keep if NAICS == "00"                                       // Keep only the all industry totals
 drop if NAME == "District of Columbia"                      // My other data do not include
