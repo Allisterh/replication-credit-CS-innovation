@@ -5,5 +5,5 @@ set timeout1 3600                             // Allow Stata up to an hour to es
 set timeout2 3600                             // Allow Stata up to an hour to download data
 
 ************************************************ EXECUTE *******************************************************************
-import 0 0                                    // All args should be 1 if you downloaded the data for the first time
+import_data 0 0                                    // All args should be 1 if you downloaded the data for the first time
 do "clean-raw-data.do"

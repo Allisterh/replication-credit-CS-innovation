@@ -1,4 +1,4 @@
-program import
+program import_data
 
     args USPTO PatentsView
 
