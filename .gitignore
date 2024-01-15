@@ -27,4 +27,5 @@ Manifest.toml
 data/
 notes/
 lit/
+proposal/
 .DS_Store
