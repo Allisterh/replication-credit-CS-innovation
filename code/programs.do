@@ -153,5 +153,7 @@ program merge_dtas
         frame drop NBER
         drop NBER
         order state state_abb year rec branch_reform interstate_reform
+
+        save "$data/descriptive-analysis.dta", replace
     }
 end

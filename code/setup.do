@@ -16,5 +16,5 @@ generate_dta_census 0
 The following merges the datasets generated above and creates new variables to produce the datasets that will be used in 
 my regressions.
 ***************/
-merge_dtas 1
+merge_dtas 0
 
