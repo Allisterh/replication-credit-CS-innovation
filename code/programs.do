@@ -80,6 +80,8 @@ program generate_dta_census
     args YesOrNo
     
     if `YesOrNo' {
+
+        loc census_file "EAGE ESIZE FAGE FSIZE GEO IESIZE IFSIZE"
         * Census business dynamics
         import delimited "$data/BDSTIMESERIES-BDSGEO-Data.csv", clear
         cap drop v32                                                // Random empty column at the end?
@@ -106,8 +108,25 @@ program generate_dta_census
             destring `i', replace force
         }
         keep if NAICS == "00"                                       // Keep only the all industry totals
-        drop if NAME == "District of Columbia"                      // My other data do not include
+        order NAME time
         save "$data/census-clean.dta", replace
     }
 
+end
+
+program merge_dtas
+
+    args DeregAndReallocation
+
+    if `DeregAndReallocation' {
+        use "$data/census-clean.dta", clear
+        ren NAME state_name
+        merge m:1 state_name using "$data/reforms.dta", nogen
+        ren state state_abb
+        ren state_name state
+        ren time year
+        order state state_abb year branch_reform interstate_reform
+        ds GEO_ID NAICS NAICS_LABEL METRO METRO_LABEL statefip, not
+        keep `r(varlist)'
+    }
 end
