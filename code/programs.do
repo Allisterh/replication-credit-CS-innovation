@@ -81,10 +81,12 @@ program generate_dta_census
     
     if `YesOrNo' {
 
-        loc census_file "EAGE ESIZE FAGE FSIZE GEO IESIZE IFSIZE"
+        /************************************************************************************************
+        This code cleans up the census data by state.
+        ************************************************************************************************/
         * Census business dynamics
-        import delimited "$data/BDSTIMESERIES-BDSGEO-Data.csv", clear
-        cap drop v32                                                // Random empty column at the end?
+        import delimited "$data/BDSTIMESERIES.BDSGEO-Data.csv", clear
+        cap drop v32                                                // Random empty column at the end
 
         * The first row are varnames and the second are  the corresponding labels. Let's clean this up a bit
         ds
@@ -109,7 +111,12 @@ program generate_dta_census
         }
         keep if NAICS == "00"                                       // Keep only the all industry totals
         order NAME time
-        save "$data/census-clean.dta", replace
+        save "$data/census-geography-clean.dta", replace
+
+        /************************************************************************************************
+        Depending on how the project evolves, below this will clean the firm/establishment data by
+        different conditioning (age,size,init age)
+        ************************************************************************************************/
     }
 
 end
@@ -119,7 +126,7 @@ program merge_dtas
     args DeregAndReallocation
 
     if `DeregAndReallocation' {
-        use "$data/census-clean.dta", clear
+        use "$data/census-geography-clean.dta", clear
         ren NAME state_name
         merge m:1 state_name using "$data/reforms.dta", nogen
         ren state state_abb
@@ -128,5 +135,23 @@ program merge_dtas
         order state state_abb year branch_reform interstate_reform
         ds GEO_ID NAICS NAICS_LABEL METRO METRO_LABEL statefip, not
         keep `r(varlist)'
+
+        * Grab NBER recession dates - make sure you have a frekey and set it on your device. See "help import fred"
+        frame create NBER
+        frame NBER {
+
+            import fred USRECQ
+            gen year = yofd(daten)
+            egen rectotal = total(USRECQ), by(year)
+            gen rec = rectotal > 0
+            collapse (mean) rec, by(year)
+            la var rec "NBER Recession Year"
+
+        }
+        frlink m:1 year, frame(NBER)
+        frget rec, from(NBER)
+        frame drop NBER
+        drop NBER
+        order state state_abb year rec branch_reform interstate_reform
     }
 end
