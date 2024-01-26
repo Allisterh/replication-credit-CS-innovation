@@ -10,11 +10,11 @@ The following just create the dtas that we will later merge together for analysi
 *************/
 import_data 0 0                                    // I don't use this data, no need to do anything here.
 generate_dta_census 0
-clean_balance_sheet 1
+clean_balance_sheet 0
 
 /*************
 The following merges the datasets generated above and creates new variables to produce the datasets that will be used in 
 my regressions.
 ***************/
-merge_dtas 0
+merge_dtas 1
 

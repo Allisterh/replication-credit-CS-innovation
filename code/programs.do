@@ -186,9 +186,11 @@ end
 
 program merge_dtas
 
-    args DeregAndReallocation
+    args descriptiveAnalysis
 
-    if `DeregAndReallocation' {
+    if `descriptiveAnalysis' {
+
+        * Merge census and reform data
         use "$data/census-geography-clean.dta", clear
         ren NAME state_name
         merge m:1 state_name using "$data/reforms.dta", nogen
@@ -211,12 +213,17 @@ program merge_dtas
             la var rec "NBER Recession Year"
 
         }
+
         frlink m:1 year, frame(NBER)
         frget rec, from(NBER)
         frame drop NBER
         drop NBER
+        
         order state state_abb year rec branch_reform interstate_reform
-
+        
+        * Merge in the Call Report data
+        merge 1:1 state_abb year using "$data/call-report-clean.dta", nogen keep(1 3)
+        
         save "$data/descriptive-analysis.dta", replace
     }
 end
