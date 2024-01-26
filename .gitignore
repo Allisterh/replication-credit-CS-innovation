@@ -28,4 +28,5 @@ data/
 notes/
 lit/
 proposal/
+output/
 .DS_Store
