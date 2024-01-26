@@ -2,7 +2,7 @@ clear all
 do globals
 
 use "$data/descriptive-analysis.dta", clear
-gen samp1 = inrange(year, 1982, 2000) & !inlist(state, "South Dakota", "Deleware")
+gen samp1 = inrange(year, 1982, 2000) & !inlist(state, "South Dakota", "Delaware")
 gen time_branching_allowed = max(min(1989 - branch_reform + 1, 7),0)
 gen time_merger_allowed = max(min(1989 - interstate_reform + 1, 7), 0)
 gen dereg_score = time_branching_allowed + time_merger_allowed
