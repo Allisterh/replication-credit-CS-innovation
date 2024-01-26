@@ -121,6 +121,69 @@ program generate_dta_census
 
 end
 
+program clean_balance_sheet
+
+    args YesOrNo
+
+    if `YesOrNo' {
+        
+        use "$data/call-report.dta", clear
+        
+        * Format dates
+        tostring RSSD9999, replace
+        ren RSSD9999 datestr
+        gen dated = date(datestr,"YMD")
+        format dated %td
+        la var dated "Date"
+        drop datestr
+        gen year = yofd(dated)
+        gen dateq = qofd(dated)
+        format dateq %tq
+
+        tostring RSSD9950, replace
+        ren RSSD9950 dateopen_str
+        gen dated_open = date(dateopen_str, "YMD")
+        format dated_open %td
+        la var dated_open "Opening Date"
+        drop dateopen_str
+
+        * Some other identifiers
+        ren RSSD9010 entity_name
+        la var entity_name ""
+        ren RSSD9130 entity_city
+        la var entity_city ""
+        ren RSSD9200 state_abb
+        la var state_abb ""
+        ren RSSD9220 entity_zipcode
+        la var entity_zipcode ""
+        ren RSSD9001 id
+        
+        * I will make some time series following "notes on making consistent time series."
+        gen loans = RCFD1400
+        replace loans = loans + RCFD2165 if dateq < tq(1984q1)
+
+        gen loans_net = RCFD2122
+        replace loans_net = loans_net + RCFD2165 if dateq < tq(1984q1)
+
+        gen CI_loans = RCFD1600
+
+        gen quarter = substr(string(dateq, "%tq"),6,1)
+        keep if quarter == "3" // I keep the 3rd quarter because this is when the economy went into recession in 1990.
+
+        collapse (sum) loans loans_net CI_loans, by(state_abb year)
+        drop if inlist(state_abb,"XX","PI")
+        loc vars "loans loans_net CI_loans"
+        foreach i in `vars' {
+            replace `i' = `i'/10^6
+        }
+        la var loans "Total Bank Lending (Gross, Millions $)"
+        la var loans_net "Total Bank Lending (Net, Millions $)"
+        la var CI_loans "Total Commercial and Indsutrial Lending (Millions $)"
+
+        save "$data/call-report-clean.dta", replace
+    }
+end
+
 program merge_dtas
 
     args DeregAndReallocation
