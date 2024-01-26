@@ -1,5 +1,6 @@
 glo data ../data
 glo code ../code
+glo output ../output
 
 /*
 The code folder is usually the working directory. But because I have to unzip files and I can only do that in
